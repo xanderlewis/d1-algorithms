@@ -5,7 +5,7 @@
 //  Created by Xander Lewis on 12/02/2017.
 //  Copyright © 2017 Xander Lewis. All rights reserved.
 //
-// Algorithms are implemented as they are defined in the Edexcel D1 specification
+// Algorithms are implemented exactly as they are defined in the Edexcel D1 specification (even if this is not the most efficient solution)
 
 import Foundation
 
@@ -55,4 +55,23 @@ public func functionalQuickSort<T: Comparable>(_ xs: [T]) -> [T] {
     let right = xs.filter { $0 >= pivot }
     
     return functionalQuickSort(left) + functionalQuickSort(right)
+}
+
+// MARK: - Searching algorithms
+
+public func binarySearch<T: Comparable>(toFind item: T, in array: [T], withStartIndex index: Int = 0) -> Int {
+    var startIndex = index
+    let pivot = array[array.count/2]
+    
+    guard pivot != item else { return startIndex + array.count/2 }
+    
+    var temp = array
+    if item < pivot {
+        temp.removeLast(array.count/2)
+    } else {
+        temp.removeFirst(array.count/2 + 1)
+        startIndex += array.count/2 + 1
+    }
+    
+    return binarySearch(toFind: item, in: temp, withStartIndex: startIndex)
 }
