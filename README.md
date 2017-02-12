@@ -5,4 +5,7 @@ All of the algorithms from the Edexcel A-Level Mathematics Decision 1 specificat
 - Bubble Sort
 - Quicksort
 
+##### Searching
+- Binary search
+
 (Some of the algorithms also include a functional version, just for some extra fun.)
