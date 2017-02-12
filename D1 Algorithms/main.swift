@@ -11,7 +11,7 @@ import Foundation
 
 // MARK: - Sorting Algorithms
 
-public func bubbleSort(array: [Int]) -> [Int] {
+public func bubbleSort<T: Comparable>(array: [T]) -> [T] {
     var sorted = array
     var swapsWereNeeded: Bool
     
