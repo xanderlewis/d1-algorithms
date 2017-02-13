@@ -253,6 +253,7 @@
 				C0C9D08D1E509DE90046AA19 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
