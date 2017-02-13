@@ -11,7 +11,14 @@ import Foundation
 
 // MARK: - Sorting Algorithms
 
-public func bubbleSort<T: Comparable>(array: [T]) -> [T] {
+/**
+ Sorts an array using the bubble sort algorithm.
+ 
+ - Parameter array:  The array to be sorted.
+ 
+ - Returns: The array sorted in ascending order.
+*/
+public func bubbleSort<T: Comparable>(_ array: [T]) -> [T] {
     var sorted = array
     var swapsWereNeeded: Bool
     
@@ -28,6 +35,13 @@ public func bubbleSort<T: Comparable>(array: [T]) -> [T] {
     return sorted
 }
 
+/**
+ Sorts an array using the quicksort algorithm.
+ 
+ - Parameter array: The array to be sorted.
+ 
+ - Returns: The array sorted in ascending order.
+*/
 public func quickSort<T: Comparable>(_ array: [T]) -> [T] {
     guard array.count > 1 else { return array }
     
@@ -47,6 +61,13 @@ public func quickSort<T: Comparable>(_ array: [T]) -> [T] {
     return quickSort(left) + quickSort(right)
 }
 
+/**
+ Sorts an array using a functional implementation of the quicksort algorithm.
+ 
+ - Parameter xs: The array to be sorted.
+ 
+ - Returns: The array `xs` sorted in ascending order.
+ */
 public func functionalQuickSort<T: Comparable>(_ xs: [T]) -> [T] {
     guard xs.count > 1 else { return xs }
     
@@ -59,11 +80,20 @@ public func functionalQuickSort<T: Comparable>(_ xs: [T]) -> [T] {
 
 // MARK: - Searching algorithms
 
-public func binarySearch<T: Comparable>(toFind item: T, in array: [T], withStartIndex index: Int = 0) -> Int {
+/**
+ Searches for an item in an array.
+ 
+ - Parameter toFind: The item to be searched for.
+ 
+ - Returns: An integer value representing the index of the item in the array, or nil if it was not found.
+ */
+public func binarySearch<T: Comparable>(toFind item: T, in array: [T], withStartIndex index: Int = 0) -> Int? {
     var startIndex = index
     let pivot = array[array.count/2]
     
     guard pivot != item else { return startIndex + array.count/2 }
+    
+    guard array.count > 1 else { return nil }
     
     var temp = array
     if item < pivot {
@@ -74,4 +104,63 @@ public func binarySearch<T: Comparable>(toFind item: T, in array: [T], withStart
     }
     
     return binarySearch(toFind: item, in: temp, withStartIndex: startIndex)
+}
+
+// MARK: - Bin packing algorithms
+
+public typealias Height = Double
+public typealias Bin = [Height]
+
+public enum BinPackingAlgorithm {
+    case firstFit, firstFitDecreasing, fullBin
+}
+
+fileprivate func sum(heights: [Height]) -> Height {
+    return heights.reduce(0,+)
+}
+
+public func lowerBound(forItemHeights itemHeights: [Height], intoBinsOfHeight binHeight: Height) -> Int {
+    let mean = Double(itemHeights.reduce(0, +)) / binHeight
+    return Int(ceil(mean))
+}
+
+/**
+ Packs an array of items into one or more fixed-height bins.
+ 
+ - Parameter itemHeights: An array of the heights of the items.
+ - Parameter intoBinsOfHeight: The height of the bins.
+ - Parameter usingAlgorithm: The algorithms to be used to pack the items.
+ 
+ - Returns: A tuple containing an array of bins packed with items, and a boolean value repesenting whether the solution found is optimal or not.
+ */
+public func pack(itemHeights: [Height], intoBinsOfHeight binHeight: Height, usingAlgorithm algorithm: BinPackingAlgorithm) -> ([Bin], Bool) {
+    var bins: [Bin] = [[]]
+    var items: [Height]
+    
+    switch algorithm {
+    case .firstFit:
+        items = itemHeights
+    case .firstFitDecreasing:
+        items = itemHeights.sorted(by: >)
+    case .fullBin:
+        fatalError("Not yet implemented.")
+    }
+    
+    var didFit: Bool
+    for item in items {
+        didFit = false
+        for i in 0..<bins.count {
+            if item <= binHeight - sum(heights: bins[i]) {
+                bins[i].append(item)
+                didFit = true
+            }
+        }
+        if !didFit {
+            bins.append([item])
+        }
+    }
+    
+    let optimal = bins.count == lowerBound(forItemHeights: items, intoBinsOfHeight: binHeight)
+    
+    return (bins, optimal)
 }
